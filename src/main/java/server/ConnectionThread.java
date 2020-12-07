@@ -3,16 +3,20 @@ package server;
 import java.io.*;
 import java.net.ServerSocket;
 import java.net.Socket;
+import java.util.ArrayList;
 import java.util.Scanner;
 
 import static common.Constants.CONNECTION_PORT;
+import static server.SocketHelper.createServerSocket;
 
 public class ConnectionThread extends Thread{
-    ServerSocket serverSocket;
+    private ArrayList<Integer> usedPorts = new ArrayList<Integer>();
+    private ServerSocket serverSocket;
 
     @Override
     public void run() {
-        serverSocket = createServerSocket();
+
+        serverSocket = createServerSocket(CONNECTION_PORT);
         if (serverSocket == null)
             return;
 
@@ -54,16 +58,8 @@ public class ConnectionThread extends Thread{
         serverSocket.close();
     }
 
-    private ServerSocket createServerSocket(){
-        ServerSocket serverSocket = null;
-        try {
-            serverSocket = new ServerSocket(CONNECTION_PORT);
-        } catch (IOException e) {
-            System.out.println(e.getMessage());
-            return null;
-        }
-
-        return serverSocket;
+    private int generatePort(){
+        return 0;
     }
 
     private Socket acceptClient(ServerSocket socket){
