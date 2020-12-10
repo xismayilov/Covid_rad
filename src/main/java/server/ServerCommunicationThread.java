@@ -1,6 +1,11 @@
 package server;
 
+import common.Constants;
 import common.SocketHelper;
+import server.serialization.DataBase;
+import server.user.User;
+import server.user.UserReferent;
+import server.user.UserStudent;
 
 import java.io.IOException;
 import java.io.OutputStreamWriter;
@@ -9,13 +14,17 @@ import java.net.ServerSocket;
 import java.net.Socket;
 import java.util.Scanner;
 
+import static common.Constants.SUCCESS_MSG;
+
 public class ServerCommunicationThread extends Thread {
     private int port;
-    Socket connectionSocket;
-    ServerSocket serverSocket;
+    private Socket connectionSocket;
+    private ServerSocket serverSocket;
+    private DataBase db;
 
-    public ServerCommunicationThread(int port){
+    public ServerCommunicationThread(int port, DataBase db){
         this.port = port;
+        this.db = db;
     }
 
     @Override
@@ -51,9 +60,16 @@ public class ServerCommunicationThread extends Thread {
         while(!stop && scanner.hasNextLine()) {
             String message = scanner.nextLine();
             System.out.println("Received: " + message);
-//            serverPrintOut.println("Server received the message: " + message);
-            if(message.trim().equals("logout"))
-                stop = true;
+
+            switch (message.trim().toLowerCase()){
+                case "logout":
+                    stop = true;
+                    break;
+                case "register":
+                    performRegistration(scanner, serverPrintOut);
+                    break;
+                default:
+            }
         }
 
         closeSockets();
@@ -72,5 +88,30 @@ public class ServerCommunicationThread extends Thread {
         try{
             connectionSocket.close();
         } catch (Exception ignored){ }
+    }
+
+    private void performRegistration(Scanner scanner, PrintWriter printWriter) {
+        String username = scanner.nextLine().trim();
+        String password = scanner.nextLine().trim();
+        String email = scanner.nextLine().trim();
+        String type = scanner.nextLine().trim();
+
+        User user = null;
+        switch (type){
+            case Constants.REFERENT:
+                user = new UserReferent(email, password, username);
+                break;
+            case Constants.STUDENT:
+                user = new UserStudent(email, password, username);
+                break;
+        }
+
+        if (!db.isValidUsername(username)) {
+            printWriter.println("Such a user exists");
+            return;
+        }
+
+        db.addUser(user);
+        printWriter.println(SUCCESS_MSG);
     }
 }

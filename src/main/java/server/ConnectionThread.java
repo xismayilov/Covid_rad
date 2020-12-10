@@ -1,17 +1,18 @@
 package server;
 
+import server.serialization.DataBase;
+
 import java.io.*;
 import java.net.ServerSocket;
 import java.net.Socket;
 import java.util.ArrayList;
 import java.util.Random;
-import java.util.Scanner;
 
 import static common.Constants.CONNECTION_PORT;
 import static common.SocketHelper.createServerSocket;
 
 public class ConnectionThread extends Thread{
-    private ArrayList<Integer> usedPorts = new ArrayList<Integer>();
+    private ArrayList<Integer> usedPorts = new ArrayList<>();
     private ServerSocket serverSocket;
 
     public ConnectionThread(){
@@ -20,7 +21,7 @@ public class ConnectionThread extends Thread{
 
     @Override
     public void run() {
-
+        DataBase db = new DataBase();
         serverSocket = createServerSocket(CONNECTION_PORT);
         if (serverSocket == null)
             return;
@@ -39,7 +40,7 @@ public class ConnectionThread extends Thread{
             }
 
             int port = generatePort();
-            ServerCommunicationThread commThread = new ServerCommunicationThread(port);
+            ServerCommunicationThread commThread = new ServerCommunicationThread(port, db);
             commThread.start();
 
             serverPrintOut.println(port);

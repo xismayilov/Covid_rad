@@ -1,22 +1,18 @@
 package server.user;
 
 import java.io.Serializable;
+import java.util.Objects;
 
 public abstract class User implements Serializable {
 
     private String email;
-    private int ID;
     private String password;
-    private String name;
-    private String surname;
+    private String username;
 
-
-    public User(String email, int ID, String password, String name, String surname) {
+    public User(String email, String password, String username) {
         this.email = email;
-        this.ID = ID;
         this.password = password;
-        this.name = name;
-        this.surname = surname;
+        this.username = username;
     }
 
     public String getEmail() {
@@ -27,14 +23,6 @@ public abstract class User implements Serializable {
         this.email = email;
     }
 
-    public int getID() {
-        return ID;
-    }
-
-    public void setID(int ID) {
-        this.ID = ID;
-    }
-
     public String getPassword() {
         return password;
     }
@@ -43,20 +31,26 @@ public abstract class User implements Serializable {
         this.password = password;
     }
 
-    public String getName() {
-        return name;
+    public String getUsername() {
+        return username;
     }
 
-    public void setName(String name) {
-        this.name = name;
+    public void setUsername(String username) {
+        this.username = username;
     }
 
-    public String getSurname() {
-        return surname;
+    @Override
+    public boolean equals(Object o) {
+        if (this == o) return true;
+        if (o == null || getClass() != o.getClass()) return false;
+
+        User user = (User) o;
+        return username.equals(user.username) &&
+                password.equals(user.password);
     }
 
-    public void setSurname(String surname) {
-        this.surname = surname;
+    @Override
+    public int hashCode() {
+        return Objects.hash(email, password, username);
     }
-
 }

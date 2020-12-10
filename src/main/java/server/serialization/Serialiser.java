@@ -50,9 +50,6 @@ public class Serialiser {
             System.out.println(ex.toString());
             return null;
         }
-        catch(NullPointerException ex) {
-            System.out.println("It is not an object");
-            return null;
-        }
     }
+
 }

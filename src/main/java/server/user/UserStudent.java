@@ -1,7 +1,7 @@
 package server.user;
 
 public class UserStudent extends User {
-    public UserStudent(String email, int ID, String password, String name, String surname) {
-        super(email, ID, password, name, surname);
+    public UserStudent(String email, String password, String username) {
+        super(email, password, username);
     }
 }
