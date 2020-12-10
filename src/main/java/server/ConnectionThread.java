@@ -4,14 +4,19 @@ import java.io.*;
 import java.net.ServerSocket;
 import java.net.Socket;
 import java.util.ArrayList;
+import java.util.Random;
 import java.util.Scanner;
 
 import static common.Constants.CONNECTION_PORT;
-import static server.SocketHelper.createServerSocket;
+import static common.SocketHelper.createServerSocket;
 
 public class ConnectionThread extends Thread{
     private ArrayList<Integer> usedPorts = new ArrayList<Integer>();
     private ServerSocket serverSocket;
+
+    public ConnectionThread(){
+        usedPorts.add(CONNECTION_PORT);
+    }
 
     @Override
     public void run() {
@@ -31,11 +36,15 @@ public class ConnectionThread extends Thread{
                 scanner = new Scanner(connectionSocket.getInputStream(), "UTF-8");
                 serverPrintOut = new PrintWriter(osw, true);
             } catch (IOException e) {
-                e.printStackTrace();
+                System.out.println(e.getMessage());
                 continue;
             }
 
-            serverPrintOut.println("Hello World! Enter Peace to exit.");
+            int port = generatePort();
+            ServerCommunicationThread commThread = new ServerCommunicationThread(port);
+            commThread.start();
+
+            serverPrintOut.println(port);
             try {
                 connectionSocket.close();
             } catch (IOException e) {
@@ -59,7 +68,19 @@ public class ConnectionThread extends Thread{
     }
 
     private int generatePort(){
-        return 0;
+        Random random = new Random();
+
+        while (true){
+            int newPort = random.nextInt(65000);
+            if (newPort < 1024)
+                newPort+=1024;  // Ports 0-1024 are usually reserved.
+
+            if (usedPorts.contains(newPort))
+                continue;
+
+            usedPorts.add(newPort);
+            return newPort;
+        }
     }
 
     private Socket acceptClient(ServerSocket socket){
