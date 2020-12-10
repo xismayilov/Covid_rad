@@ -1,6 +1,8 @@
 package server.user;
 
-public abstract class User {
+import java.io.Serializable;
+
+public abstract class User implements Serializable {
 
     private String email;
     private int ID;
