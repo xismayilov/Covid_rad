@@ -29,11 +29,9 @@ public class ConnectionThread extends Thread{
             Socket connectionSocket = acceptClient(serverSocket);
 
             OutputStreamWriter osw;
-            Scanner scanner = null;
-            PrintWriter serverPrintOut = null;
+            PrintWriter serverPrintOut;
             try {
                 osw = new OutputStreamWriter(connectionSocket.getOutputStream(), "UTF-8");
-                scanner = new Scanner(connectionSocket.getInputStream(), "UTF-8");
                 serverPrintOut = new PrintWriter(osw, true);
             } catch (IOException e) {
                 System.out.println(e.getMessage());
@@ -45,19 +43,13 @@ public class ConnectionThread extends Thread{
             commThread.start();
 
             serverPrintOut.println(port);
+
             try {
                 connectionSocket.close();
+                serverPrintOut.close();
             } catch (IOException e) {
                 System.out.println(e.getMessage());
             }
-
-//            boolean stop = false;
-//            while(!stop && scanner.hasNextLine()) {
-//                String message = scanner.nextLine();
-//                serverPrintOut.println("Server received the message: " + message);
-//                if(message.equals("stop"))
-//                    stop = true;
-//            }
         }
     }
 

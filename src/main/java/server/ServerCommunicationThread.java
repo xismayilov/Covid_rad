@@ -50,10 +50,13 @@ public class ServerCommunicationThread extends Thread {
         boolean stop = false;
         while(!stop && scanner.hasNextLine()) {
             String message = scanner.nextLine();
-            serverPrintOut.println("Server received the message: " + message);
-            if(message.equals("logout"))
+            System.out.println("Received: " + message);
+//            serverPrintOut.println("Server received the message: " + message);
+            if(message.trim().equals("logout"))
                 stop = true;
         }
+
+        closeSockets();
     }
 
     @Override
@@ -65,6 +68,8 @@ public class ServerCommunicationThread extends Thread {
     private void closeSockets(){
         try{
             serverSocket.close();
+        } catch (Exception ignored){ }
+        try{
             connectionSocket.close();
         } catch (Exception ignored){ }
     }

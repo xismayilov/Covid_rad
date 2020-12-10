@@ -1,11 +1,5 @@
 package server;
 
-import java.io.*;
-import java.net.ServerSocket;
-import java.net.Socket;
-import java.util.Scanner;
-import static common.Constants.CONNECTION_PORT;
-
 public class ServerStartup {
 
     public static void startTheServer() throws InterruptedException {
