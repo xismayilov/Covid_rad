@@ -1,6 +1,6 @@
-package client;
+package client.user;
 
-public abstract class Client {
+public abstract class User {
 
     private String email;
     private int ID;
@@ -9,7 +9,7 @@ public abstract class Client {
     private String surname;
 
 
-    public Client(String email, int ID, String password, String name, String surname) {
+    public User(String email, int ID, String password, String name, String surname) {
         this.email = email;
         this.ID = ID;
         this.password = password;

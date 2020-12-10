@@ -1,5 +1,7 @@
 package client;
 
+import client.user.User;
+
 import java.io.FileInputStream;
 import java.io.FileOutputStream;
 import java.io.IOException;
@@ -11,14 +13,14 @@ public class Deserialiser {
     String filename = "clients.out";
 
 
-    public void Serialize(Client client) throws NullPointerException {
+    public void Serialize(User user) throws NullPointerException {
         try {
             //Saving of object in a file
             FileOutputStream file = new FileOutputStream(filename);
             ObjectOutputStream out = new ObjectOutputStream(file);
 
             // Method for serialization of object
-            out.writeObject(client);
+            out.writeObject(user);
 
             out.close();
             file.close();
@@ -36,19 +38,19 @@ public class Deserialiser {
 
 
 
-    public Client Deserialize(String username, String password, int ID)  throws IOException,ClassNotFoundException{
+    public User Deserialize(String username, String password, int ID)  throws IOException,ClassNotFoundException{
         try {
             // Reading the object from a file
             FileInputStream file = new FileInputStream(filename);
             ObjectInputStream in = new ObjectInputStream(file);
 
             // Method for deserialization of object
-            Client client = (Client) in.readObject();
+            User user = (User) in.readObject();
             in.close();
             file.close();
 
-            if(client.getName().equals(username) && client.getPassword().equals(password) && client.getID() == ID){
-                return client;
+            if(user.getName().equals(username) && user.getPassword().equals(password) && user.getID() == ID){
+                return user;
             }
 
             else {
