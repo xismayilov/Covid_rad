@@ -1,6 +1,6 @@
-package client;
+package server.serialization;
 
-import client.user.User;
+import server.user.User;
 
 import java.io.FileInputStream;
 import java.io.FileOutputStream;
@@ -11,7 +11,6 @@ import java.io.ObjectOutputStream;
 public class Deserialiser {
 
     String filename = "clients.out";
-
 
     public void Serialize(User user) throws NullPointerException {
         try {
@@ -35,8 +34,6 @@ public class Deserialiser {
             System.out.println("It is not an object");
         }
     }
-
-
 
     public User Deserialize(String username, String password, int ID)  throws IOException,ClassNotFoundException{
         try {

@@ -1,4 +1,4 @@
-package client.user;
+package server.user;
 
 public class UserStudent extends User {
     public UserStudent(String email, int ID, String password, String name, String surname) {

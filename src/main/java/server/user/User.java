@@ -1,4 +1,4 @@
-package client.user;
+package server.user;
 
 public abstract class User {
 
