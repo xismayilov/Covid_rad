@@ -15,6 +15,9 @@ public abstract class User implements Serializable {
         this.username = username;
     }
 
+    public abstract String getAvailableCommands();
+    public abstract boolean isAvailableCommand(String command);
+
     public String getEmail() {
         return email;
     }
@@ -37,6 +40,15 @@ public abstract class User implements Serializable {
 
     public void setUsername(String username) {
         this.username = username;
+    }
+
+    public static User getUserByType(String type) {
+        if (type.equals(UserReferent.class.getCanonicalName()))
+            return new UserReferent("", "", "");
+        else if (type.equals(UserStudent.class.getCanonicalName()))
+            return new UserStudent("", "", "");
+
+        return null;
     }
 
     @Override

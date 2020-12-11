@@ -1,5 +1,7 @@
 package client;
 
+import server.user.User;
+
 import java.io.*;
 import java.net.Socket;
 import java.util.Scanner;
@@ -16,6 +18,7 @@ public class ClientCommunicationThread extends Thread {
     private OutputStreamWriter osw;
     private PrintWriter printWriter;
     private Scanner stdinScanner;
+    private User currentUser;
 
     public ClientCommunicationThread(int communicationPort){
         this.communicationPort = communicationPort;
@@ -49,8 +52,31 @@ public class ClientCommunicationThread extends Thread {
 
         printWriter = new PrintWriter(osw, true);
         stdinScanner = new Scanner(System.in);
+
+        /*Waiting for signing in*/
+        while (!isSignedIn){
+            String userInput = stdinScanner.nextLine().trim().toLowerCase();
+
+            switch (userInput){
+                case "help":
+                    System.out.println("Commands:\n" +
+                            "register - sign up a new user\n" +
+                            "sign in - sign in to the system\n");
+                    break;
+                case "sign in" :
+                case "register" :
+                    performCommand(userInput);
+                    break;
+                default:
+                    System.out.println("Unknown command");
+            }
+        }
+
         while (!stop) {
             String userInput = stdinScanner.nextLine();
+            if (!currentUser.isAvailableCommand(userInput))
+                userInput = "";
+
             performCommand(userInput);
 
             boolean isError = printWriter.checkError();
@@ -76,18 +102,15 @@ public class ClientCommunicationThread extends Thread {
                 performSignIn();
                 break;
             case "help":
-                System.out.println("Commands:\n" +
-                        "register - sign up a new user\n" +
-                        "sign in - sign in to the system\n" +
-                        "wait in queue - \n" +
-                        "get number - get the number which represents your number in a queue\n" +
-                        "help - this help message");
+                System.out.println(currentUser.getAvailableCommands());
                 break;
             case "wait in queue":
                 startWaiting();
                 break;
             case "get number":
                 getQueueNumber();
+                break;
+            case "call next one":
                 break;
             default:
                 System.out.println("Unknown command");
@@ -139,6 +162,8 @@ public class ClientCommunicationThread extends Thread {
         String result = readFromServer();
         if (result.equals(SUCCESS_MSG)) {
             System.out.println("You are successfully signed in.");
+            String type = readFromServer();
+            currentUser = User.getUserByType(type);
             isSignedIn = true;
         }
         else {

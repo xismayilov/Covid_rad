@@ -135,8 +135,12 @@ public class ServerCommunicationThread extends Thread {
         String password = scanner.nextLine().trim();
         signedInUser = db.signIn(username, password);
 
-        if (signedInUser != null)
+        if (signedInUser != null) {
             serverPrintOut.println(SUCCESS_MSG);
+            String className = signedInUser.getClass().getCanonicalName();
+            System.out.println(className);
+            serverPrintOut.println(className);
+        }
         else
             serverPrintOut.println(FAILURE_MSG);
     }
