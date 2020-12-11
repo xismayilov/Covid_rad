@@ -72,21 +72,21 @@ public class ClientCommunicationThread extends Thread {
             case "register":
                 performRegistration();
                 break;
-            case "sign_in":
+            case "sign in":
                 performSignIn();
                 break;
             case "help":
                 System.out.println("Commands:\n" +
                         "register - sign up a new user\n" +
-                        "sign_in - sign in to the system\n" +
-                        "stand_to_queue - \n" +
-                        "get_queue_number - get the number which represents your number in a queue\n" +
+                        "sign in - sign in to the system\n" +
+                        "wait in queue - \n" +
+                        "get number - get the number which represents your number in a queue\n" +
                         "help - this help message");
                 break;
-            case "wait_in_queue":
+            case "wait in queue":
                 startWaiting();
                 break;
-            case "get_queue_number":
+            case "get number":
                 getQueueNumber();
                 break;
             default:
