@@ -97,10 +97,10 @@ public class ServerCommunicationThread extends Thread {
                 performSignIn();
                 break;
             case "wait_in_queue":
-                // TODO
+                waitInQueue();
                 break;
             case "get_queue_number":
-                // TODO
+                getQueueNumber();
                 break;
         }
     }
@@ -139,5 +139,26 @@ public class ServerCommunicationThread extends Thread {
             serverPrintOut.println(SUCCESS_MSG);
         else
             serverPrintOut.println(FAILURE_MSG);
+    }
+
+    private void waitInQueue(){
+        if (db.isInQueue(signedInUser)) {
+            serverPrintOut.println("You are already in a queue.");
+            return;
+        }
+
+        db.addToQueue(signedInUser);
+        int queueNum = db.getQueueSize();
+        serverPrintOut.println(String.format("You have number %d.", queueNum));
+    }
+
+    private void getQueueNumber(){
+        if (!db.isInQueue(signedInUser)) {
+            serverPrintOut.println("You are not in a queue.");
+            return;
+        }
+
+        int queueNum = db.getQueueNumber(signedInUser);
+        serverPrintOut.println(String.format("You have number %d.", queueNum));
     }
 }
