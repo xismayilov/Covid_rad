@@ -4,6 +4,7 @@ import server.user.User;
 
 import java.util.LinkedList;
 import java.util.List;
+import java.util.Optional;
 
 public class DataBase {
     private List<User> users;
@@ -27,5 +28,13 @@ public class DataBase {
 
     public boolean isValidUser(User user){
         return !users.contains(user);
+    }
+
+    public User signIn(String username, String password) {
+        Optional<User> result = users.stream()
+                .filter(user -> user.getUsername().equals(username) && user.getPassword().equals(password))
+                .findAny();
+
+        return result.orElse(null);
     }
 }

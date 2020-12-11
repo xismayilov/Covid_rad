@@ -8,4 +8,5 @@ public class Constants {
     public static final String REFERENT = "referent";
     public static final String STUDENT = "student";
     public static final String SUCCESS_MSG = "Success";
+    public static final String FAILURE_MSG = "Failure";
 }

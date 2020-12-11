@@ -1,5 +1,6 @@
 package client;
 
+import javax.swing.table.TableRowSorter;
 import java.io.*;
 import java.net.Socket;
 import java.util.Scanner;
@@ -137,10 +138,13 @@ public class ClientCommunicationThread extends Thread {
         printWriter.println(password.trim());
 
         String result = readFromServer();
-        if (result.equals(SUCCESS_MSG))
+        if (result.equals(SUCCESS_MSG)) {
             System.out.println("You are successfully signed in.");
-        else
+            isSignedIn = true;
+        }
+        else {
             System.out.println("Wrong username or password");
+        }
     }
 
     private void startWaiting(){

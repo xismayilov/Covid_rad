@@ -14,6 +14,7 @@ import java.net.ServerSocket;
 import java.net.Socket;
 import java.util.Scanner;
 
+import static common.Constants.FAILURE_MSG;
 import static common.Constants.SUCCESS_MSG;
 
 public class ServerCommunicationThread extends Thread {
@@ -24,6 +25,7 @@ public class ServerCommunicationThread extends Thread {
     private Scanner scanner;
     private PrintWriter serverPrintOut;
     private DataBase db;
+    private User signedInUser;
 
     public ServerCommunicationThread(int port, DataBase db){
         this.port = port;
@@ -92,7 +94,7 @@ public class ServerCommunicationThread extends Thread {
                 performRegistration(scanner, serverPrintOut);
                 break;
             case "sign_in":
-                // TODO
+                performSignIn();
                 break;
             case "wait_in_queue":
                 // TODO
@@ -126,5 +128,16 @@ public class ServerCommunicationThread extends Thread {
 
         db.addUser(user);
         printWriter.println(SUCCESS_MSG);
+    }
+
+    private void performSignIn(){
+        String username = scanner.nextLine().trim();
+        String password = scanner.nextLine().trim();
+        signedInUser = db.signIn(username, password);
+
+        if (signedInUser != null)
+            serverPrintOut.println(SUCCESS_MSG);
+        else
+            serverPrintOut.println(FAILURE_MSG);
     }
 }
