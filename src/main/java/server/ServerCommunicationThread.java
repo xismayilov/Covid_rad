@@ -18,8 +18,11 @@ import static common.Constants.SUCCESS_MSG;
 
 public class ServerCommunicationThread extends Thread {
     private int port;
+    private boolean stop = false;
     private Socket connectionSocket;
     private ServerSocket serverSocket;
+    private Scanner scanner;
+    private PrintWriter serverPrintOut;
     private DataBase db;
 
     public ServerCommunicationThread(int port, DataBase db){
@@ -41,9 +44,7 @@ public class ServerCommunicationThread extends Thread {
             return;
         }
 
-        Scanner scanner;
         OutputStreamWriter osw;
-        PrintWriter serverPrintOut;
         try {
             osw = new OutputStreamWriter(connectionSocket.getOutputStream(), "UTF-8");
             scanner = new Scanner(connectionSocket.getInputStream(), "UTF-8");
@@ -54,22 +55,13 @@ public class ServerCommunicationThread extends Thread {
             return;
         }
 
-        serverPrintOut.println("Hello User!");
+        serverPrintOut.println("Hello!\nWelcome to the queue system. Print \"help\" for a list of commands.");
 
-        boolean stop = false;
         while(!stop && scanner.hasNextLine()) {
             String message = scanner.nextLine();
             System.out.println("Received: " + message);
 
-            switch (message.trim().toLowerCase()){
-                case "logout":
-                    stop = true;
-                    break;
-                case "register":
-                    performRegistration(scanner, serverPrintOut);
-                    break;
-                default:
-            }
+            performCommand(message);
         }
 
         closeSockets();
@@ -88,6 +80,27 @@ public class ServerCommunicationThread extends Thread {
         try{
             connectionSocket.close();
         } catch (Exception ignored){ }
+    }
+
+
+    private void performCommand(String command) {
+        switch (command.trim().toLowerCase()){
+            case "logout":
+                stop = true;
+                break;
+            case "register":
+                performRegistration(scanner, serverPrintOut);
+                break;
+            case "sign_in":
+                // TODO
+                break;
+            case "wait_in_queue":
+                // TODO
+                break;
+            case "get_queue_number":
+                // TODO
+                break;
+        }
     }
 
     private void performRegistration(Scanner scanner, PrintWriter printWriter) {
