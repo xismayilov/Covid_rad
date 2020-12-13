@@ -12,11 +12,13 @@ public class DataBase {
     private List<User> users;       // All users which are known on the server.
 
     public DataBase(){
-        users = Serialiser.Deserialize();
+        users = Serialiser.DeserializeUsers();
         if (users == null)
             users = new LinkedList<>();
 
-        usersQueue = new LinkedList<>();
+        usersQueue = Serialiser.DeserializeQueue();
+        if (usersQueue == null)
+            usersQueue = new LinkedList<>();
     }
 
     /**
@@ -68,6 +70,7 @@ public class DataBase {
 
     public void addToQueue(User user){
         usersQueue.add(user);
+        Serialiser.Serialize(usersQueue);
     }
 
     public int getQueueSize(){
@@ -94,6 +97,8 @@ public class DataBase {
      * @return  removed user.
      */
     public User removeFromQueue(){
-        return usersQueue.poll();
+        User u = usersQueue.poll();
+        Serialiser.Serialize(usersQueue);
+        return u;
     }
 }
