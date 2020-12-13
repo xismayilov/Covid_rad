@@ -15,7 +15,7 @@ import java.util.Queue;
 public class Serialiser {
 
     private static String USERS_FILE_NAME = "clients.out";
-    private static String QUEUE_FILE_NAME = "clients.out";
+    private static String QUEUE_FILE_NAME = "queue.out";
 
     /**
      *  Saves users to a file.
