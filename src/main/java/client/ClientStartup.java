@@ -11,8 +11,15 @@ import java.net.Socket;
 import static common.Constants.CONNECTION_PORT;
 import static common.Constants.INVALID_PORT;
 
+/**
+ * Entry point for the client application.
+ */
 public class ClientStartup {
 
+    /**
+     *  Connects to a server on the port 8888 and receives a port for future communication.
+     * @return received port for communication with a server.
+     */
     public static int getCommunicationPortFromServer() {
         int communicationPort = Constants.INVALID_PORT;
         Socket socket = SocketHelper.createClientSocket(CONNECTION_PORT);

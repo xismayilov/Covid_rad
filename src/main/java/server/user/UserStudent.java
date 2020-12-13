@@ -5,12 +5,21 @@ public class UserStudent extends User {
         super(email, password, username);
     }
 
+    private boolean isCalled = false;   // tells if a student was called by a referent.
+
+    @Override
+    public void notifyObservers() {
+        isCalled = true;
+        super.notifyObservers();
+    }
+
     @Override
     public String getAvailableCommands() {
         return "Commands:\n" +
                 "wait in queue - you begin waiting in a queue\n" +
                 "get number - get the number which represents your number in a queue\n" +
-                "help - this help message";
+                "help - this help message\n"+
+                "logout - quit the system";
     }
 
     @Override
@@ -19,9 +28,18 @@ public class UserStudent extends User {
             case "wait in queue":
             case "get number":
             case "help":
+            case "logout":
                 return true;
             default:
                 return false;
         }
+    }
+
+    public boolean getIsCalled(){
+        return isCalled;
+    }
+
+    public void setIsCalled(boolean value){
+        isCalled = value;
     }
 }

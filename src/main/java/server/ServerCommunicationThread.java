@@ -12,12 +12,17 @@ import java.io.OutputStreamWriter;
 import java.io.PrintWriter;
 import java.net.ServerSocket;
 import java.net.Socket;
+import java.util.Observable;
+import java.util.Observer;
 import java.util.Scanner;
 
 import static common.Constants.FAILURE_MSG;
 import static common.Constants.SUCCESS_MSG;
 
-public class ServerCommunicationThread extends Thread {
+/**
+ * ServerCommunicationThread is responsible for performing commands which are sent from a client to a server.
+ */
+public class ServerCommunicationThread extends Thread implements Observer {
     private int port;
     private boolean stop = false;
     private Socket connectionSocket;
@@ -27,6 +32,11 @@ public class ServerCommunicationThread extends Thread {
     private DataBase db;
     private User signedInUser;
 
+    /**
+     *
+     * @param port  port on which communication will be performed.
+     * @param db    database with users.
+     */
     public ServerCommunicationThread(int port, DataBase db){
         this.port = port;
         this.db = db;
@@ -40,7 +50,7 @@ public class ServerCommunicationThread extends Thread {
             return;
 
         try {
-            connectionSocket = serverSocket.accept();
+            connectionSocket = serverSocket.accept();   // waiting for a client ot be connected.
         } catch (IOException e) {
             System.out.println(e.getMessage());
             return;
@@ -60,7 +70,7 @@ public class ServerCommunicationThread extends Thread {
         serverPrintOut.println("Hello!\nWelcome to the queue system. Print \"help\" for a list of commands.");
 
         while(!stop && scanner.hasNextLine()) {
-            String message = scanner.nextLine();
+            String message = scanner.nextLine();        // Wait for a command from a client
             System.out.println("Received: " + message);
 
             performCommand(message);
@@ -68,22 +78,6 @@ public class ServerCommunicationThread extends Thread {
 
         closeSockets();
     }
-
-    @Override
-    protected void finalize() throws Throwable {
-        super.finalize();
-        closeSockets();
-    }
-
-    private void closeSockets(){
-        try{
-            serverSocket.close();
-        } catch (Exception ignored){ }
-        try{
-            connectionSocket.close();
-        } catch (Exception ignored){ }
-    }
-
 
     private void performCommand(String command) {
         switch (command.trim().toLowerCase()){
@@ -101,6 +95,9 @@ public class ServerCommunicationThread extends Thread {
                 break;
             case "get_queue_number":
                 getQueueNumber();
+                break;
+            case "call_next_one":
+                callNextOne();
                 break;
         }
     }
@@ -138,7 +135,19 @@ public class ServerCommunicationThread extends Thread {
         if (signedInUser != null) {
             serverPrintOut.println(SUCCESS_MSG);
             String className = signedInUser.getClass().getCanonicalName();
-            System.out.println(className);
+
+            String welcomeMessage = "Welcome to our waiting system Covid Rad! ";
+            if (signedInUser.getClass().equals(UserStudent.class)){
+                // Checks whether a referent has called the student.
+                UserStudent student = (UserStudent) signedInUser;
+                if (student.getIsCalled()) {
+                    welcomeMessage += "Referent has called you. You can visit the study department.";
+                    student.setIsCalled(false);
+                }
+            }
+
+            serverPrintOut.println(welcomeMessage);
+            System.out.println("LOG: Signed in new " + className);
             serverPrintOut.println(className);
         }
         else
@@ -164,5 +173,37 @@ public class ServerCommunicationThread extends Thread {
 
         int queueNum = db.getQueueNumber(signedInUser);
         serverPrintOut.println(String.format("You have number %d.", queueNum));
+    }
+
+    private void callNextOne(){
+        User user = db.removeFromQueue();
+        if (user == null){
+            serverPrintOut.println("There are no waiting students.");
+            return;
+        }
+
+        serverPrintOut.println("The next student has been called. It is " + user.getUsername());
+        user.notifyObservers();
+    }
+
+    @Override
+    protected void finalize() throws Throwable {
+        super.finalize();
+        closeSockets();
+    }
+
+    private void closeSockets(){
+        try{
+            serverSocket.close();
+        } catch (Exception ignored){ }
+        try{
+            connectionSocket.close();
+        } catch (Exception ignored){ }
+    }
+
+    @Override
+    public void update(Observable o, Object arg) {
+        ((UserStudent) o).setIsCalled(false);
+        serverPrintOut.println("Referent has called you. You can visit the study department.");
     }
 }

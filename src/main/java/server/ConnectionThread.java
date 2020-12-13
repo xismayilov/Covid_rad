@@ -11,6 +11,10 @@ import java.util.Random;
 import static common.Constants.CONNECTION_PORT;
 import static common.SocketHelper.createServerSocket;
 
+/**
+ * ConnectionThread is responsible for connection establishment between a client and the server.
+ * Connection is performed on the port 8888.
+ */
 public class ConnectionThread extends Thread{
     private ArrayList<Integer> usedPorts = new ArrayList<>();
     private ServerSocket serverSocket;
@@ -27,7 +31,7 @@ public class ConnectionThread extends Thread{
             return;
 
         while (true){
-            Socket connectionSocket = acceptClient(serverSocket);
+            Socket connectionSocket = acceptClient(serverSocket);   // Waiting for a client to accept
 
             OutputStreamWriter osw;
             PrintWriter serverPrintOut;
@@ -40,10 +44,10 @@ public class ConnectionThread extends Thread{
             }
 
             int port = generatePort();
-            ServerCommunicationThread commThread = new ServerCommunicationThread(port, db);
+            ServerCommunicationThread commThread = new ServerCommunicationThread(port, db); // create new thread for communication between a client and the server
             commThread.start();
 
-            serverPrintOut.println(port);
+            serverPrintOut.println(port);   // Send generated port to a client
 
             try {
                 connectionSocket.close();
@@ -60,6 +64,10 @@ public class ConnectionThread extends Thread{
         serverSocket.close();
     }
 
+    /**
+     *  Generates new port.
+     * @return random port which is greater 1024
+     */
     private int generatePort(){
         Random random = new Random();
 

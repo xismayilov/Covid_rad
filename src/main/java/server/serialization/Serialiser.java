@@ -8,18 +8,23 @@ import java.io.ObjectInputStream;
 import java.io.ObjectOutputStream;
 import java.util.List;
 
+/**
+ * Serializer is responsible for write/reading users to/from a file.
+ */
 public class Serialiser {
 
     private static String FILE_NAME = "clients.out";
 
+    /**
+     *  Saves users to a file.
+     * @param users a list of users which are going to be saved to a file
+     */
     public static void Serialize(List<User> users) {
         try {
-            //Saving of object in a file
             FileOutputStream file = new FileOutputStream(FILE_NAME);
             ObjectOutputStream out = new ObjectOutputStream(file);
 
-            // Method for serialization of object
-            out.writeObject(users);
+            out.writeObject(users); //Saving of objects in a file
 
             out.close();
             file.close();
@@ -31,9 +36,12 @@ public class Serialiser {
         }
     }
 
+    /**
+     *  Uploads users from a file.
+     * @return a list of users which are uploaded from a file
+     */
     public static List<User> Deserialize() {
         try {
-            // Reading the object from a file
             FileInputStream file = new FileInputStream(FILE_NAME);
             ObjectInputStream in = new ObjectInputStream(file);
 

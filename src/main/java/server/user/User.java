@@ -2,8 +2,12 @@ package server.user;
 
 import java.io.Serializable;
 import java.util.Objects;
+import java.util.Observable;
 
-public abstract class User implements Serializable {
+/**
+ * Common class for users which can be connected to a server.
+ */
+public abstract class User extends Observable implements Serializable {
 
     private String email;
     private String password;
@@ -42,6 +46,11 @@ public abstract class User implements Serializable {
         this.username = username;
     }
 
+    /**
+     * Creates new user according to specified by a canonical name of a class.
+     * @param type  type of a user.
+     * @return  new empty user.
+     */
     public static User getUserByType(String type) {
         if (type.equals(UserReferent.class.getCanonicalName()))
             return new UserReferent("", "", "");
