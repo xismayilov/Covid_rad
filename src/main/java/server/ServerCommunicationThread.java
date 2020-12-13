@@ -149,6 +149,9 @@ public class ServerCommunicationThread extends Thread implements Observer {
             serverPrintOut.println(welcomeMessage);
             System.out.println("LOG: Signed in new " + className);
             serverPrintOut.println(className);
+
+            signedInUser.addObserver(this);
+            signedInUser.AddObserver(this);
         }
         else
             serverPrintOut.println(FAILURE_MSG);
@@ -201,9 +204,11 @@ public class ServerCommunicationThread extends Thread implements Observer {
         } catch (Exception ignored){ }
     }
 
-    @Override
-    public void update(Observable o, Object arg) {
-        ((UserStudent) o).setIsCalled(false);
+    public void notifyStudent() {
+        ((UserStudent)signedInUser).setIsCalled(false);
         serverPrintOut.println("Referent has called you. You can visit the study department.");
     }
+
+    @Override
+    public void update(Observable o, Object arg) { }
 }

@@ -1,14 +1,16 @@
 package server.user;
 
+import server.ServerCommunicationThread;
+
 import java.io.Serializable;
-import java.util.Objects;
-import java.util.Observable;
+import java.util.*;
 
 /**
  * Common class for users which can be connected to a server.
  */
 public abstract class User extends Observable implements Serializable {
 
+    protected List<Observer> observers;
     private String email;
     private String password;
     private String username;
@@ -17,6 +19,7 @@ public abstract class User extends Observable implements Serializable {
         this.email = email;
         this.password = password;
         this.username = username;
+        this.observers = new LinkedList<>();
     }
 
     public abstract String getAvailableCommands();
@@ -44,6 +47,10 @@ public abstract class User extends Observable implements Serializable {
 
     public void setUsername(String username) {
         this.username = username;
+    }
+
+    public void AddObserver(ServerCommunicationThread o){
+        observers.add(o);
     }
 
     /**

@@ -1,5 +1,9 @@
 package server.user;
 
+import server.ServerCommunicationThread;
+
+import java.util.Observer;
+
 public class UserStudent extends User {
     public UserStudent(String email, String password, String username) {
         super(email, password, username);
@@ -10,7 +14,10 @@ public class UserStudent extends User {
     @Override
     public void notifyObservers() {
         isCalled = true;
-        super.notifyObservers();
+        for (Observer o : observers) {
+            ((ServerCommunicationThread) o).notifyStudent();
+        }
+        super.notifyObservers(isCalled);
     }
 
     @Override
